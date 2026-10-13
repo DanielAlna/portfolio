@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Theme tokens. Light is the default; dark applies from the OS setting
+   unless the visitor picked a theme with the toggle (data-theme on <html>). */
+:root {
+  --bg: #ffffff;
+  --bg-alt: #f6f8fa;
+  --fg: #0f172a;
+  --muted: #5b6474;
+  --border: #e3e7ec;
+  --accent: #1f5fc4;
+  --accent-soft: #e7eefb;
+  --accent-2: #e36f17;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1b2028; --bg-alt: #21272f; --fg: #d5dae2; --muted: #9ca5b3;
+    --border: #343b46; --accent: #85b0f2; --accent-soft: #25324a; --accent-2: #ee9a5a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1b2028; --bg-alt: #21272f; --fg: #d5dae2; --muted: #9ca5b3;
+  --border: #343b46; --accent: #85b0f2; --accent-soft: #25324a; --accent-2: #ee9a5a;
+  color-scheme: dark;
+}
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body { @apply bg-bg text-fg font-sans leading-relaxed antialiased; }
+  h1, h2, h3 { text-wrap: balance; }
+  a:focus-visible, button:focus-visible {
+    @apply outline outline-2 outline-offset-2 outline-accent rounded;
+  }
+}
+
+/* Smooth color fade, only while the theme toggle is switching */
+html.theming body, html.theming body * {
+  transition: background-color .35s ease, color .35s ease, border-color .35s ease !important;
+}
+
+/* Intro load sequence: each line rises in a little after the one before */
+.intro-stagger > * { @apply animate-rise; }
+.intro-stagger > *:nth-child(2) { animation-delay: .08s; }
+.intro-stagger > *:nth-child(3) { animation-delay: .16s; }
+.intro-stagger > *:nth-child(4) { animation-delay: .24s; }
+.intro-stagger > *:nth-child(5) { animation-delay: .32s; }
+
+/* Pulsing "open to new roles" dot */
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-2) 55%, transparent); }
+  100% { box-shadow: 0 0 0 9px transparent; }
+}
+.status-dot { animation: pulse 2.4s ease-out infinite; }
+
+/* Blinking caret after the typed role */
+.caret {
+  display: inline-block;
+  width: 0.09em;
+  height: 1em;
+  margin-left: 3px;
+  vertical-align: -0.12em;
+  background: var(--accent);
+  @apply animate-blink;
+}
+
+/* Screenshot viewer size */
+.viewer { width: min(1200px, 94vw); max-height: 94vh; }
+.viewer-body { max-height: calc(94vh - 140px); }
+
+dialog::backdrop { background: rgb(5 10 15 / .78); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
